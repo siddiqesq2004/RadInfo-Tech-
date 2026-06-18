@@ -1,0 +1,18 @@
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteBase /
+
+# Prevent sitemap.xml from being routed to index.php or returning a 404
+RewriteRule ^sitemap\.xml$ - [L]
+RewriteRule ^robots\.txt$ - [L]
+
+# Extensionless URLs: allow accessing /about instead of /about.html
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}.html -f
+RewriteRule ^(.*)$ $1.html [L]
+
+</IfModule>
+
+# Force correct MIME type for XML so Search Console doesn't see it as HTML
+AddType application/xml .xml

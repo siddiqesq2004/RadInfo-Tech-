@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://radinfotec.com/sitemap.xml
