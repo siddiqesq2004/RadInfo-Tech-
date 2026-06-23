@@ -209,7 +209,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // --- Contact Form Handling ---
   const contactForm = document.getElementById('contact-form');
   
-  contactForm?.addEventListener('submit', (e) => {
+  contactForm?.addEventListener('submit', async (e) => {
     e.preventDefault();
     
     const btn = contactForm.querySelector('.btn-submit');
@@ -217,19 +217,34 @@ document.addEventListener('DOMContentLoaded', () => {
     
     btn.innerHTML = '<span>Sending...</span>';
     btn.disabled = true;
-    
-    // Simulate form submission
-    setTimeout(() => {
-      btn.innerHTML = '<span>✓ Message Sent!</span>';
-      btn.style.background = '#22c55e';
+
+    try {
+      const formData = new FormData(contactForm);
+      const response = await fetch('/send_mail.php', {
+        method: 'POST',
+        body: formData
+      });
       
-      setTimeout(() => {
-        btn.innerHTML = originalText;
-        btn.style.background = '';
-        btn.disabled = false;
+      const result = await response.json();
+      
+      if (result.status === 'success') {
+        btn.innerHTML = '<span>✓ Message Sent!</span>';
+        btn.style.background = '#22c55e';
         contactForm.reset();
-      }, 2500);
-    }, 1500);
+      } else {
+        btn.innerHTML = '<span>✕ Failed to send</span>';
+        btn.style.background = '#e11d48';
+      }
+    } catch (error) {
+      btn.innerHTML = '<span>✕ Error occurred</span>';
+      btn.style.background = '#e11d48';
+    }
+    
+    setTimeout(() => {
+      btn.innerHTML = originalText;
+      btn.style.background = '';
+      btn.disabled = false;
+    }, 3000);
   });
 
   // --- Typing effect for hero subtitle ---
